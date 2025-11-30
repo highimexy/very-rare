@@ -1,66 +1,50 @@
-import { useEffect, useRef } from 'react';
-import { Application, Container, Graphics, Ticker } from 'pixi.js';
+import { useEffect, useRef, useState } from 'react';
+import { Application } from 'pixi.js';
+import Frame from './Components/Frame'; // Importujemy Twój komponent
 
 function App() {
   const pixiContainerRef = useRef<HTMLDivElement>(null);
-  
-  const appRef = useRef<Application | null>(null);
+  const [app, setApp] = useState<Application | null>(null);
+  // Zabezpieczenie przed podwójnym odpaleniem w React Strict Mode
+  const initializedRef = useRef(false);
 
   useEffect(() => {
-    let isMounted = true;
+    // Jeśli już zainicjowaliśmy, nie rób tego ponownie
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    const pixiApp = new Application();
 
     const initPixi = async () => {
-      if (appRef.current) return; 
-
-      const app = new Application();
-
-      await app.init({
-        background: '#1099bb',
+      await pixiApp.init({
+        background: '#2c3e50', // Tymczasowy kolor tła (zamiast grafiki)
         resizeTo: window,
         width: window.innerWidth,
         height: window.innerHeight,
         resolution: window.devicePixelRatio || 1,
         autoDensity: true,
+        // WAŻNE DLA PIXEL ART:
+        roundPixels: true, 
       });
 
-      if (!isMounted) {
-        app.destroy({ removeView: true });
-        return;
-      }
-
-      appRef.current = app;
-
+      // Sprawdź czy kontener w HTML nadal istnieje (czy nie wyszliśmy ze strony)
       if (pixiContainerRef.current) {
-        pixiContainerRef.current.appendChild(app.canvas as HTMLCanvasElement);
+        pixiContainerRef.current.appendChild(pixiApp.canvas as HTMLCanvasElement);
+        setApp(pixiApp); // Zapisujemy instancję, by przekazać ją dalej
+      } else {
+        // Jeśli kontener zniknął, niszczymy aplikację, żeby nie wisiała w pamięci
+        pixiApp.destroy({ removeView: true });
       }
-
-      // --- LOGIKA GRY ---
-      const container = new Container();
-      app.stage.addChild(container);
-
-      const rect = new Graphics();
-      // Rysowanie prostokąta
-      rect.rect(0, 0, 100, 100); 
-      rect.fill(0xd5d5d5); 
-      
-      rect.pivot.set(50, 50);
-      container.addChild(rect);
-
-      container.x = app.screen.width / 2;
-      container.y = app.screen.height / 2;
-
-      app.ticker.add((ticker: Ticker) => {
-        rect.rotation += 0.05 * ticker.deltaTime;
-      });
     };
 
     initPixi();
 
     return () => {
-      isMounted = false;
-      if (appRef.current) {
-        appRef.current.destroy({ removeView: true });
-        appRef.current = null;
+      // Cleanup
+      // Sprawdzamy czy renderer żyje, aby uniknąć błędów przy szybkim odmontowaniu
+      if (pixiApp.renderer) {
+        pixiApp.destroy({ removeView: true, texture: true, baseTexture: true });
+        initializedRef.current = false;
       }
     };
   }, []);
@@ -68,8 +52,20 @@ function App() {
   return (
     <div 
       ref={pixiContainerRef} 
-      style={{ width: '100vw', height: '100vh', overflow: 'hidden' }} 
-    />
+      style={{ 
+        width: '100vw', 
+        height: '100vh', 
+        overflow: 'hidden',
+        // Dodatkowe style dla lepszego wyglądu podczas ładowania
+        display: 'flex',       
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#000' 
+      }} 
+    >
+      {/* Renderujemy Frame tylko gdy Pixi jest gotowe */}
+      {app && <Frame app={app} />}
+    </div>
   );
 }
 
