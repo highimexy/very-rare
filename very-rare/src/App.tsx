@@ -3,40 +3,39 @@ import { Link } from "react-router-dom";
 function App() {
   return (
     <>
-      <div className="text-center flex flex-col h-full ">
-        <h1 className="text-4xl">HOME</h1>
-        <div className="flex gap-4 flex-row ">
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex gap-10 flex-col md:flex-row mb-10">
           <Link
             to="/BlackJack"
-            className="border-2 p-2 rounded-2xl hover:border-2 hover:border-purple-950"
+            className="text-7xl font-pirata  rounded-2xl  hover:text-purple-900 no-underline hover:underline transition duration-200"
           >
             BlackJack
           </Link>
 
           <Link
             to="/Mines"
-            className="border-2 p-2 rounded-2xl hover:border-2 hover:border-purple-950"
+            className="text-7xl font-pirata  rounded-2xl  hover:text-purple-900 no-underline hover:underline transition duration-200"
           >
             Mines
           </Link>
 
           <Link
             to="/Plinko"
-            className="border-2 p-2 rounded-2xl hover:border-2 hover:border-purple-950"
+            className="text-7xl font-pirata  rounded-2xl  hover:text-purple-900 no-underline hover:underline transition duration-200"
           >
             Plinko
           </Link>
 
           <Link
             to="/SimpleSlot"
-            className="border-2 p-2 rounded-2xl hover:border-2 hover:border-purple-950"
+            className="text-7xl font-pirata  rounded-2xl  hover:text-purple-900 no-underline hover:underline transition duration-200"
           >
             SimpleSlot
           </Link>
 
           <Link
             to="/HardSlot"
-            className="border-2 p-2 rounded-2xl hover:border-2 hover:border-purple-950"
+            className="text-7xl font-pirata  rounded-2xl  hover:text-purple-900 no-underline hover:underline transition duration-200"
           >
             HardSlot
           </Link>

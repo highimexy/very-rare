@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Jersey+25&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pirata+One&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -16,8 +16,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.jersey-25-regular {
-  font-family: "Jersey 25", sans-serif;
-  font-weight: 400;
-  font-style: normal;
+@theme {
+  --font-pirata: "Pirata One", sans-serif; 
 }
