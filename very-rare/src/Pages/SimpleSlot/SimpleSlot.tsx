@@ -1,30 +1,25 @@
-import { Application, Assets, Sprite } from "pixi.js";
-
-
-function SimpleSlot() {(async () => {
-    const app = new Application();
-
-    await app.init({ background: "#1099bb", resizeTo: window });
-
-    document.body.appendChild(app.canvas);
-
-    const texture = await Assets.load("https://pixijs.com/assets/bunny.png");
-
-    const bunny = new Sprite(texture);
-
-    app.stage.addChild(bunny);
-
-    bunny.anchor.set(0.5);
-
-    bunny.x = app.screen.width / 2;
-    bunny.y = app.screen.height / 2;
-
-    app.ticker.add((time) => {
-      bunny.rotation += 0.1 * time.deltaTime;
-    });
-  })();
-
-  return <></>;
+function SimpleSlot() {
+  return (
+    <>
+      <div className="flex flex-col min-h-screen">
+        <div className="text-center p-6">
+          <h1 className="text-7xl font-pirata rounded-2xl cursor-crosshair hover:text-purple-600 no-underline hover:underline transition duration-200">
+            Simple Slot
+          </h1>
+        </div>
+        <div className="flex grow items-center justify-center">
+          <div className="flex flex-row gap-20">
+            <div className="p-8 border-4 border-gray-600 rounded-lg shadow-xl">
+              <h1>PANEL</h1>
+            </div>
+            <div className="p-8 border-4 border-gray-600 rounded-lg shadow-xl">
+              <h1>GRA</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default SimpleSlot;
