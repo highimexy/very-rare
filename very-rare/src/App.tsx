@@ -1,9 +1,14 @@
 import { Link } from "react-router-dom";
 
+import Joker from "./assets/joker.png";
+
 function App() {
   return (
     <>
       <div className="flex items-center justify-center min-h-screen">
+        <div>
+          <img src={Joker} className="w-[400px] scale-x-[-1]"></img>
+        </div>
         <div className="flex gap-10 flex-col md:flex-row mb-10">
           <Link
             to="/BlackJack"
@@ -39,6 +44,9 @@ function App() {
           >
             HardSlot
           </Link>
+        </div>
+        <div>
+          <img src={Joker} className="w-[400px]"></img>
         </div>
       </div>
     </>
