@@ -8,7 +8,7 @@ function HardSlot() {
           </h1>
         </div>
         <div className="flex grow items-center justify-center">
-          <div className="flex flex-row gap-20">
+          <div className="flex flex-col gap-20">
             <div className="p-8 border-4 border-gray-600 rounded-lg shadow-xl">
               <h1>PANEL</h1>
             </div>
