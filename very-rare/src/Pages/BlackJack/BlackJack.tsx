@@ -1,3 +1,4 @@
+import Balance from "../Components/Balance";
 import SidePanel from "../Components/SidePanel";
 
 function BlackJack() {
@@ -8,6 +9,9 @@ function BlackJack() {
           <h1 className="text-7xl font-pirata rounded-2xl cursor-crosshair hover:text-purple-600 no-underline hover:underline transition duration-200">
             Black Jack
           </h1>
+        </div>
+        <div className="flex justify-center">
+          <Balance />
         </div>
         <div className="flex grow items-center justify-center">
           <div className="flex flex-col md:flex-row gap-20 bg-[#0c0c0f] p-10">
