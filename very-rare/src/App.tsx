@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-
+import JokerLeft from "./assets/jokerLeft.png";
 import Joker from "./assets/joker.png";
 
 function App() {
@@ -46,7 +46,7 @@ function App() {
           </Link>
         </div>
         <div>
-          <img src={Joker} className="w-[400px]"></img>
+          <img src={JokerLeft} className="w-[400px] scale-x-[-1]"></img>
         </div>
       </div>
     </>
