@@ -2,6 +2,7 @@ import Balance from "../Components/Balance";
 import SidePanel from "../Components/SidePanel";
 import Joker from "../../assets/joker.png";
 import JokerLeft from "../../assets/jokerLeft.png";
+import MinesBoard from "./MinesBoard";
 
 function Mines() {
   return (
@@ -9,10 +10,7 @@ function Mines() {
       <div className="flex flex-col min-h-screen p-2">
         <div className="flex justify-center p-2 ">
           <div className="flex flex-row items-center">
-            <img
-              src={Joker}
-              className="w-[100px] scale-x-[-1]"
-            ></img>
+            <img src={Joker} className="w-[100px] scale-x-[-1]"></img>
             <h1 className="text-7xl font-pirata rounded-2xl cursor-crosshair hover:text-[#1e0b37] no-underline hover:underline transition duration-200">
               Mines
             </h1>
@@ -30,9 +28,7 @@ function Mines() {
           </div>
 
           <div className="flex grow items-center justify-center p-8 border-4 border-[#1e0b37] rounded-lg">
-            <div className="p-8">
-              <h1 className="text-4xl font-bold">GRA</h1>
-            </div>
+            <MinesBoard />
           </div>
         </div>
       </div>
