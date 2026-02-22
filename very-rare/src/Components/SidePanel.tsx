@@ -5,13 +5,31 @@ import { useBalance } from "../context/BalanceContext";
 interface SidePanelProps {
   onBet: (amount: number) => void;
   isGameActive: boolean;
+  theme?: "red" | "emerald" | "purple";
 }
 
-function SidePanel({ onBet, isGameActive }: SidePanelProps) {
+function SidePanel({ onBet, isGameActive, theme = "red" }: SidePanelProps) {
   const { balance } = useBalance();
   const [betInput, setBetInput] = useState<string>("");
 
-  // Logika przycisków pomocniczych
+  const styles = {
+    red: {
+      icon: "text-red-500",
+      text: "hover:text-red-500",
+      btn: "bg-red-600 hover:bg-red-500 border-red-800 shadow-[0_0_20px_rgba(220,38,38,0.3)]",
+    },
+    emerald: {
+      icon: "text-emerald-500",
+      text: "hover:text-emerald-500",
+      btn: "bg-emerald-600 hover:bg-emerald-500 border-emerald-800 shadow-[0_0_20px_rgba(16,185,129,0.3)]",
+    },
+    purple: {
+      icon: "text-purple-500",
+      text: "hover:text-purple-500",
+      btn: "bg-purple-600 hover:bg-purple-500 border-purple-800 shadow-[0_0_20px_rgba(147,51,234,0.3)]",
+    },
+  }[theme];
+
   const handleHalf = () => {
     if (!betInput) return;
     setBetInput((prev) => (Number(prev) / 2).toFixed(2));
@@ -20,7 +38,6 @@ function SidePanel({ onBet, isGameActive }: SidePanelProps) {
   const handleDouble = () => {
     if (!betInput) return;
     const doubled = Number(betInput) * 2;
-    // Nie pozwalamy ustawić stawki większej niż posiadany balans
     setBetInput(Math.min(doubled, balance).toFixed(2));
   };
 
@@ -38,7 +55,7 @@ function SidePanel({ onBet, isGameActive }: SidePanelProps) {
       alert("Nie masz tyle kasy!");
       return;
     }
-    onBet(amount); // Wywołujemy funkcję startu gry przekazaną w propsach
+    onBet(amount);
   };
 
   return (
@@ -52,7 +69,7 @@ function SidePanel({ onBet, isGameActive }: SidePanelProps) {
             <input
               type="number"
               value={betInput}
-              disabled={isGameActive} // Blokujemy zmianę stawki w trakcie gry
+              disabled={isGameActive}
               onChange={(e) => setBetInput(e.target.value)}
               className={`
                 p-2 pl-4 pr-10 bg-[#10061f] outline-none rounded-sm w-full placeholder:text-gray-300
@@ -64,7 +81,7 @@ function SidePanel({ onBet, isGameActive }: SidePanelProps) {
               placeholder="0.00"
             />
             <div className="absolute right-0 top-0 h-full flex items-center pr-3 pointer-events-none">
-              <HiOutlineCurrencyDollar className="text-2xl text-red-500" />
+              <HiOutlineCurrencyDollar className={`text-2xl ${styles.icon}`} />
             </div>
           </div>
 
@@ -72,21 +89,21 @@ function SidePanel({ onBet, isGameActive }: SidePanelProps) {
             <button
               onClick={handleHalf}
               disabled={isGameActive}
-              className="px-3 cursor-pointer text-white  hover:text-red-500 transition-colors disabled:opacity-30"
+              className={`px-3 cursor-pointer text-white ${styles.text} transition-colors disabled:opacity-30`}
             >
               1/2
             </button>
             <button
               onClick={handleDouble}
               disabled={isGameActive}
-              className="px-3 border-l-2 border-[#10061f] cursor-pointer hover:text-red-500  transition-colors disabled:opacity-30"
+              className={`px-3 border-l-2 border-[#10061f] cursor-pointer ${styles.text} transition-colors disabled:opacity-30`}
             >
               x2
             </button>
             <button
               onClick={handleMax}
               disabled={isGameActive}
-              className="px-3 border-l-2 border-[#10061f] cursor-pointer hover:text-red-500  transition-colors disabled:opacity-30"
+              className={`px-3 border-l-2 border-[#10061f] cursor-pointer ${styles.text} transition-colors disabled:opacity-30`}
             >
               Max
             </button>
@@ -103,7 +120,7 @@ function SidePanel({ onBet, isGameActive }: SidePanelProps) {
             ${
               isGameActive
                 ? "bg-gray-800 text-gray-500 cursor-not-allowed border-none"
-                : "bg-red-600 hover:bg-red-500 text-white shadow-[0_0_20px_rgba(220,38,38,0.3)] active:scale-95 border-b-4 border-red-800"
+                : `${styles.btn} text-white active:scale-95 border-b-4`
             }
           `}
         >
@@ -121,7 +138,7 @@ function SidePanel({ onBet, isGameActive }: SidePanelProps) {
             <span className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">
               Profit / Loss
             </span>
-            <span className="text-xl font-mono text-red-500 font-bold">
+            <span className={`text-xl font-mono font-bold ${styles.icon}`}>
               0.00x
             </span>
           </div>

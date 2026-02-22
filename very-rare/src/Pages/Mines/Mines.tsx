@@ -63,7 +63,11 @@ function Mines() {
       <div className="flex grow flex-col md:flex-row gap-6 lg:px-20 pb-10">
         {/* PANEL BOCZNY STEROWANIA */}
         <div className="md:w-104 w-full shrink-0 p-8 border-4 border-[#1e0b37]  rounded-lg shadow-2xl">
-          <SidePanel onBet={handlePlaceBet} isGameActive={isGameActive} />
+          <SidePanel
+            onBet={handlePlaceBet}
+            isGameActive={isGameActive}
+            theme="red"
+          />
         </div>
 
         {/* PLANSZA GRY */}
