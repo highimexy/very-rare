@@ -5,6 +5,7 @@ import Joker from "../../assets/joker.png";
 import JokerLeft from "../../assets/jokerLeft.png";
 import BlackJackBoard from "./BlackJackBoard.tsx";
 import { useBalance } from "../../context/BalanceContext";
+import BackButton from "../../Components/BackButton.tsx";
 
 function BlackJack() {
   const { subtractBet, addWin } = useBalance();
@@ -32,8 +33,8 @@ function BlackJack() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen text-white p-2 overflow-x-hidden">
-      {/* NAGŁÓWEK */}
+    <div className="relative flex flex-col min-h-screen text-white p-2 overflow-x-hidden">
+      <BackButton theme="emerald" />
       <div className="flex justify-center p-2">
         <div className="flex flex-row items-center">
           <img
