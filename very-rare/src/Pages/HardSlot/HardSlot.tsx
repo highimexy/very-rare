@@ -1,5 +1,5 @@
-import Balance from "../Components/Balance";
-import SidePanel from "../Components/SidePanel";
+import Balance from "../../Components/Balance";
+import SidePanel from "../../Components/SidePanel";
 import Joker from "../../assets/joker.png";
 import JokerLeft from "../../assets/jokerLeft.png";
 

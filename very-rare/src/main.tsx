@@ -5,6 +5,9 @@ import RootLayout from "./RootLayout.tsx";
 import "./index.css";
 import App from "./App.tsx";
 
+// Importuj swój Provider
+import { BalanceProvider } from "./context/BalanceContext.tsx";
+
 import HardSlot from "./Pages/HardSlot/HardSlot.tsx";
 import Mines from "./Pages/Mines/Mines.tsx";
 import Plinko from "./Pages/Plinko/Plinko.tsx";
@@ -16,7 +19,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <RootLayout />,
     children: [
-      { 
+      {
         index: true,
         element: <App />,
       },
@@ -46,6 +49,9 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>
+    {/* BalanceProvider musi być tutaj, aby każda strona w routerze mogła z niego korzystać */}
+    <BalanceProvider>
+      <RouterProvider router={router} />
+    </BalanceProvider>
+  </StrictMode>,
 );

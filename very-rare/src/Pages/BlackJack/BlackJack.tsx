@@ -1,5 +1,4 @@
-import Balance from "../Components/Balance";
-import SidePanel from "../Components/SidePanel";
+import Balance from "../../Components/Balance";
 import Joker from "../../assets/joker.png";
 import JokerLeft from "../../assets/jokerLeft.png";
 
@@ -22,9 +21,7 @@ function BlackJack() {
         </div>
 
         <div className="flex grow flex-col md:flex-row gap-4 md:p-20">
-          <div className="md:w-104 w-full shrink-0 p-8 border-4 border-[#1e0b37]  rounded-lg mx-auto md:mx-0 inset-0">
-            <SidePanel />
-          </div>
+          <div className="md:w-104 w-full shrink-0 p-8 border-4 border-[#1e0b37]  rounded-lg mx-auto md:mx-0 inset-0"></div>
           <div className="flex grow items-center justify-center p-8 border-4 border-[#1e0b37] rounded-lg">
             <div className="p-8">
               <h1 className="text-4xl font-bold">GRA</h1>

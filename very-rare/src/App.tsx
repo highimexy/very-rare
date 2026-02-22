@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import JokerLeft from "./assets/jokerLeft.png";
 import Joker from "./assets/joker.png";
-import Balance from "./Pages/Components/Balance";
-import User from "./Pages/Components/User";
+import Balance from "./Components/Balance";
+import User from "./Components/User";
 
 function App() {
   const games = [

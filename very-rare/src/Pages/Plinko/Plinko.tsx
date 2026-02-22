@@ -1,5 +1,5 @@
-import Balance from "../Components/Balance";
-import SidePanel from "../Components/SidePanel";
+import Balance from "../../Components/Balance";
+import SidePanel from "../../Components/SidePanel";
 import Joker from "../../assets/joker.png";
 import JokerLeft from "../../assets/jokerLeft.png";
 
@@ -9,10 +9,7 @@ function Plinko() {
       <div className="flex flex-col min-h-screen p-2">
         <div className="flex justify-center p-2 ">
           <div className="flex flex-row items-center">
-            <img
-              src={Joker}
-              className="w-[100px] scale-x-[-1] "
-            ></img>
+            <img src={Joker} className="w-[100px] scale-x-[-1] "></img>
             <h1 className="text-7xl font-pirata rounded-2xl cursor-crosshair hover:text-[#1e0b37] no-underline hover:underline transition duration-200">
               Black Jack
             </h1>
