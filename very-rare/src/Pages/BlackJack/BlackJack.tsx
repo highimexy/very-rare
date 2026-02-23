@@ -39,7 +39,7 @@ function BlackJack() {
         <div className="flex flex-row items-center">
           <img
             src={Joker}
-            className="w-[80px] md:w-[120px] scale-x-[-1]"
+            className="w-20px md:w-[120px] scale-x-[-1]"
             alt="Joker"
           />
           <h1 className="text-5xl md:text-8xl font-pirata px-4 hover:text-emerald-500 transition duration-300 cursor-default">
@@ -47,7 +47,7 @@ function BlackJack() {
           </h1>
           <img
             src={JokerLeft}
-            className="w-[80px] md:w-[120px] scale-x-[-1]"
+            className="w-20px md:w-[120px] scale-x-[-1]"
             alt="Joker Left"
           />
         </div>

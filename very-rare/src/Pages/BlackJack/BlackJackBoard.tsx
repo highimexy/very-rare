@@ -206,7 +206,6 @@ function BlackJackBoard({
         </h2>
         <div className="flex gap-2">
           {dealerHand.map((card, idx) => (
-            // Krupier ukrywa drugą kartę dopóki trwa gra
             <div key={idx}>
               {renderCard(card, gameState === "playing" && idx === 1)}
             </div>

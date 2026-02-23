@@ -5,7 +5,6 @@ import RootLayout from "./RootLayout.tsx";
 import "./index.css";
 import App from "./App.tsx";
 
-// Importuj swój Provider
 import { BalanceProvider } from "./context/BalanceContext.tsx";
 
 import HardSlot from "./Pages/HardSlot/HardSlot.tsx";

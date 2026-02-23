@@ -16,11 +16,11 @@ function Mines() {
 
   // Funkcja wywoływana przez przycisk "Bet" w SidePanel
   const handlePlaceBet = (amount: number) => {
-    const success = subtractBet(amount); // Próba pobrania środków z BalanceContext
+    const success = subtractBet(amount);
 
     if (success) {
       setCurrentBet(amount);
-      setIsGameActive(true); // Odblokowuje planszę i blokuje SidePanel
+      setIsGameActive(true);
     } else {
       alert("Niewystarczające środki na koncie!");
     }
@@ -29,9 +29,9 @@ function Mines() {
   // Funkcja kończąca grę (wygrana/przegrana)
   const handleGameEnd = (winAmount: number = 0) => {
     if (winAmount > 0) {
-      addWin(winAmount); // Dodaje wygraną do BalanceContext
+      addWin(winAmount);
     }
-    setIsGameActive(false); // Odblokowuje SidePanel
+    setIsGameActive(false);
     setCurrentBet(0);
   };
 
@@ -43,7 +43,7 @@ function Mines() {
         <div className="flex flex-row items-center">
           <img
             src={Joker}
-            className="w-[80px] md:w-[120px] scale-x-[-1]"
+            className="w-80px md:w-[120px] scale-x-[-1]"
             alt="Joker"
           />
           <h1 className="text-5xl md:text-8xl font-pirata px-4 hover:text-red-600 transition duration-300 cursor-default">
@@ -51,7 +51,7 @@ function Mines() {
           </h1>
           <img
             src={JokerLeft}
-            className="w-[80px] md:w-[120px] scale-x-[-1]"
+            className="w-20px md:w-[120px] scale-x-[-1]"
             alt="Joker Left"
           />
         </div>

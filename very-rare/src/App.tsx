@@ -53,7 +53,7 @@ function App() {
       </header>
 
       {/* GŁÓWNY CONTENT */}
-      <main className="flex-grow flex flex-col lg:flex-row items-center justify-center p-4 gap-10">
+      <main className="grow flex flex-col lg:flex-row items-center justify-center p-4 gap-10">
         {/* Lewy Joker */}
         <div className="hidden lg:block shrink-0">
           <img
