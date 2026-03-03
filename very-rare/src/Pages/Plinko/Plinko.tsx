@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Balance from "../../Components/Balance";
-import SidePanel from "../../Components/SidePanel";
+import SidePanel, { type SessionEntry } from "../../Components/SidePanel";
 import Joker from "../../assets/joker.png";
 import JokerLeft from "../../assets/jokerLeft.png";
 import PlinkoBoard from "./PlinkoBoard";
@@ -11,6 +11,7 @@ function Plinko() {
   const { subtractBet, addWin } = useBalance();
   const [isGameActive, setIsGameActive] = useState<boolean>(false);
   const [currentBet, setCurrentBet] = useState<number>(0);
+  const [sessionHistory, setSessionHistory] = useState<SessionEntry[]>([]);
 
   const handlePlaceBet = (amount: number) => {
     const success = subtractBet(amount);
@@ -24,6 +25,7 @@ function Plinko() {
 
   const handleGameEnd = (winAmount: number = 0) => {
     if (winAmount > 0) addWin(winAmount);
+    setSessionHistory((prev) => [...prev, { net: winAmount - currentBet }]);
     setIsGameActive(false);
     setCurrentBet(0);
   };
@@ -52,6 +54,7 @@ function Plinko() {
             onBet={handlePlaceBet}
             isGameActive={isGameActive}
             theme="pink"
+            sessionHistory={sessionHistory}
           />
         </div>
 

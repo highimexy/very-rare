@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { motion, useAnimation, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useMotionValue, animate, AnimatePresence } from "framer-motion";
 
 const ROWS = 8;
 const SLOTS = ROWS + 1; // 9 slots
@@ -20,29 +20,21 @@ const ROW_H = (BOARD_H - SLOT_AREA_H - 20) / (ROWS + 1);
 const PEG_R = 5;
 const BALL_R = 9;
 
-// Center coords of peg at row r, peg index p (0..r)
-const pegCX = (r: number, p: number) =>
-  BOARD_W / 2 + (p - r / 2) * SLOT_W;
+const pegCX = (r: number, p: number) => BOARD_W / 2 + (p - r / 2) * SLOT_W;
 const pegCY = (r: number) => 20 + (r + 1) * ROW_H;
 
-// Pre-compute ball path: returns waypoints as CENTER coordinates
 const computePath = (): { waypoints: { x: number; y: number }[]; slot: number } => {
   const waypoints: { x: number; y: number }[] = [];
-  // Ball starts above center of first peg row
   waypoints.push({ x: BOARD_W / 2, y: 0 });
 
-  let p = 0; // peg index in current row (0..r)
+  let p = 0;
   for (let r = 0; r < ROWS; r++) {
     waypoints.push({ x: pegCX(r, p), y: pegCY(r) });
-    if (Math.random() < 0.5) p += 1; // bounce right
-    // bounce left: p stays same
+    if (Math.random() < 0.5) p += 1;
   }
 
-  // Land in slot
-  const slot = p; // 0..ROWS
-  const slotCX = (slot + 0.5) * SLOT_W;
-  waypoints.push({ x: slotCX, y: BOARD_H - SLOT_AREA_H / 2 });
-
+  const slot = p;
+  waypoints.push({ x: (slot + 0.5) * SLOT_W, y: BOARD_H - SLOT_AREA_H / 2 });
   return { waypoints, slot };
 };
 
@@ -56,59 +48,85 @@ function PlinkoBoard({ betAmount, isGameActive, onGameEnd }: PlinkoBoardProps) {
   const [gameState, setGameState] = useState<"idle" | "dropping" | "result">("idle");
   const [lastSlot, setLastSlot] = useState<number | null>(null);
   const [winAmount, setWinAmount] = useState(0);
-  const [showBall, setShowBall] = useState(false);
-  const controls = useAnimation();
+
+  // MotionValues live outside React render cycle — always in sync
+  const ballX = useMotionValue(BOARD_W / 2 - BALL_R);
+  const ballY = useMotionValue(-BALL_R * 2);
+  const ballOpacity = useMotionValue(0);
+
+  const stopRef = useRef(false);
+  const activeAnims = useRef<ReturnType<typeof animate>[]>([]);
+
+  const stopAll = () => {
+    stopRef.current = true;
+    activeAnims.current.forEach((a) => a.stop());
+    activeAnims.current = [];
+    ballOpacity.set(0);
+  };
 
   useEffect(() => {
     if (isGameActive && gameState === "idle") {
+      stopRef.current = false;
       dropBall();
     }
     if (!isGameActive) {
-      controls.stop();
+      stopAll();
       setGameState("idle");
       setLastSlot(null);
       setWinAmount(0);
-      setShowBall(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGameActive]);
 
   const dropBall = async () => {
     const { waypoints, slot } = computePath();
     setGameState("dropping");
-    setLastSlot(null);
-    setShowBall(true);
 
-    // Snap ball to start (center coords → top-left of div = center - BALL_R)
-    controls.set({ x: waypoints[0].x - BALL_R, y: waypoints[0].y - BALL_R });
+    // Snap to start, make ball visible
+    ballX.set(waypoints[0].x - BALL_R);
+    ballY.set(waypoints[0].y - BALL_R);
+    ballOpacity.set(1);
 
-    // Animate through each waypoint; gravity-like: faster in middle, slower near pegs
+    // Animate step-by-step through waypoints (gravity feel)
     for (let i = 1; i < waypoints.length; i++) {
+      if (stopRef.current) return;
+
       const wp = waypoints[i];
       const isFirst = i === 1;
       const isLast = i === waypoints.length - 1;
-      const duration = isFirst ? 0.4 : isLast ? 0.35 : 0.2;
-      const ease = isLast ? "easeOut" : isFirst ? "easeIn" : "easeInOut";
+      const duration = isFirst ? 0.38 : isLast ? 0.42 : 0.21;
+      const ease = isLast ? "easeOut" : "easeIn";
 
-      await controls.start(
-        { x: wp.x - BALL_R, y: wp.y - BALL_R },
-        { duration, ease }
-      );
+      const ax = animate(ballX, wp.x - BALL_R, { duration, ease });
+      const ay = animate(ballY, wp.y - BALL_R, { duration, ease });
+      activeAnims.current = [ax, ay];
+      await Promise.all([ax, ay]);
     }
+
+    if (stopRef.current) return;
+
+    // Fade ball out
+    const fo = animate(ballOpacity, 0, { duration: 0.22 });
+    activeAnims.current = [fo];
+    await fo;
+
+    if (stopRef.current) return;
 
     const multiplier = MULTIPLIERS[slot];
     const win = parseFloat((betAmount * multiplier).toFixed(2));
     setLastSlot(slot);
     setWinAmount(win);
     setGameState("result");
-    setShowBall(false);
 
     setTimeout(() => {
-      onGameEnd(win);
-      setGameState("idle");
+      if (!stopRef.current) {
+        onGameEnd(win);
+        setGameState("idle");
+      }
     }, 2500);
   };
 
-  // Build all pegs for SVG
+  // Build peg list for SVG
   const pegs: { cx: number; cy: number; key: string }[] = [];
   for (let r = 0; r < ROWS; r++) {
     for (let p = 0; p <= r; p++) {
@@ -142,6 +160,7 @@ function PlinkoBoard({ betAmount, isGameActive, onGameEnd }: PlinkoBoardProps) {
           background: "linear-gradient(to bottom, #1a0a2e, #0d0620)",
         }}
       >
+        {/* Static SVG layer: pegs + slots */}
         <svg
           width={BOARD_W}
           height={BOARD_H}
@@ -149,7 +168,14 @@ function PlinkoBoard({ betAmount, isGameActive, onGameEnd }: PlinkoBoardProps) {
         >
           <defs>
             <filter id="pegGlow">
-              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <filter id="slotGlow">
+              <feGaussianBlur stdDeviation="5" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
@@ -157,7 +183,6 @@ function PlinkoBoard({ betAmount, isGameActive, onGameEnd }: PlinkoBoardProps) {
             </filter>
           </defs>
 
-          {/* Pegs */}
           {pegs.map((peg) => (
             <circle
               key={peg.key}
@@ -165,18 +190,17 @@ function PlinkoBoard({ betAmount, isGameActive, onGameEnd }: PlinkoBoardProps) {
               cy={peg.cy}
               r={PEG_R}
               fill="#ec4899"
-              opacity={0.75}
+              opacity={0.8}
               filter="url(#pegGlow)"
             />
           ))}
 
-          {/* Slot buckets */}
           {MULTIPLIERS.map((mult, i) => {
             const x = i * SLOT_W;
             const y = BOARD_H - SLOT_AREA_H;
             const isWin = lastSlot === i;
             return (
-              <g key={i}>
+              <g key={i} filter={isWin ? "url(#slotGlow)" : undefined}>
                 <rect
                   x={x + 1}
                   y={y + 2}
@@ -194,8 +218,8 @@ function PlinkoBoard({ betAmount, isGameActive, onGameEnd }: PlinkoBoardProps) {
                   fontSize={10}
                   fontWeight="bold"
                   fill={isWin ? "#fff" : SLOT_COLORS[i]}
-                  opacity={isWin ? 1 : 0.9}
-                  style={{ transition: "all 0.4s" }}
+                  opacity={isWin ? 1 : 0.85}
+                  style={{ transition: "all 0.4s", userSelect: "none" }}
                 >
                   {mult}x
                 </text>
@@ -204,23 +228,26 @@ function PlinkoBoard({ betAmount, isGameActive, onGameEnd }: PlinkoBoardProps) {
           })}
         </svg>
 
-        {/* Animated ball — sits in parent's coordinate space */}
-        {showBall && (
-          <motion.div
-            animate={controls}
-            className="absolute rounded-full pointer-events-none"
-            style={{
-              width: BALL_R * 2,
-              height: BALL_R * 2,
-              top: 0,
-              left: 0,
-              background: "radial-gradient(circle at 35% 35%, #ffffff, #f9a8d4)",
-              boxShadow:
-                "0 0 10px rgba(236,72,153,0.9), 0 0 20px rgba(236,72,153,0.5)",
-              zIndex: 10,
-            }}
-          />
-        )}
+        {/* Ball — always mounted, opacity controlled via MotionValue */}
+        <motion.div
+          style={{
+            x: ballX,
+            y: ballY,
+            opacity: ballOpacity,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: BALL_R * 2,
+            height: BALL_R * 2,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle at 32% 28%, #ffffff, #f9a8d4, #ec4899)",
+            boxShadow:
+              "0 0 8px rgba(236,72,153,1), 0 0 20px rgba(236,72,153,0.7), 0 0 40px rgba(236,72,153,0.3)",
+            zIndex: 10,
+            pointerEvents: "none",
+          }}
+        />
       </div>
 
       {/* Multiplier pills */}
@@ -228,13 +255,15 @@ function PlinkoBoard({ betAmount, isGameActive, onGameEnd }: PlinkoBoardProps) {
         {MULTIPLIERS.map((m, i) => (
           <div
             key={i}
-            className="text-xs px-2 py-0.5 rounded-full font-bold border transition-all duration-300"
+            className="text-xs px-2 py-0.5 rounded-full font-bold border"
             style={{
               color: SLOT_COLORS[i],
               borderColor: SLOT_COLORS[i] + "55",
               backgroundColor:
-                lastSlot === i ? SLOT_COLORS[i] + "30" : SLOT_COLORS[i] + "10",
-              boxShadow: lastSlot === i ? `0 0 8px ${SLOT_COLORS[i]}` : "none",
+                lastSlot === i ? SLOT_COLORS[i] + "35" : SLOT_COLORS[i] + "12",
+              boxShadow: lastSlot === i ? `0 0 10px ${SLOT_COLORS[i]}` : "none",
+              transform: lastSlot === i ? "scale(1.15)" : "scale(1)",
+              transition: "all 0.3s",
             }}
           >
             {m}x

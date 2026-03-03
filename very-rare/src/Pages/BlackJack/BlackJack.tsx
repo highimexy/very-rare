@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Balance from "../../Components/Balance";
-import SidePanel from "../../Components/SidePanel";
+import SidePanel, { type SessionEntry } from "../../Components/SidePanel";
 import Joker from "../../assets/joker.png";
 import JokerLeft from "../../assets/jokerLeft.png";
 import BlackJackBoard from "./BlackJackBoard.tsx";
@@ -12,6 +12,7 @@ function BlackJack() {
 
   const [isGameActive, setIsGameActive] = useState<boolean>(false);
   const [currentBet, setCurrentBet] = useState<number>(0);
+  const [sessionHistory, setSessionHistory] = useState<SessionEntry[]>([]);
 
   const handlePlaceBet = (amount: number) => {
     const success = subtractBet(amount);
@@ -28,6 +29,7 @@ function BlackJack() {
     if (winAmount > 0) {
       addWin(winAmount);
     }
+    setSessionHistory((prev) => [...prev, { net: winAmount - currentBet }]);
     setIsGameActive(false);
     setCurrentBet(0);
   };
@@ -66,6 +68,7 @@ function BlackJack() {
             onBet={handlePlaceBet}
             isGameActive={isGameActive}
             theme="emerald"
+            sessionHistory={sessionHistory}
           />
         </div>
 
