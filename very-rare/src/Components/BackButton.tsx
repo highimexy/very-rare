@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { FaChevronLeft } from "react-icons/fa";
 
 interface BackButtonProps {
-  theme?: "red" | "emerald" | "purple";
+  theme?: "red" | "emerald" | "purple" | "yellow" | "orange" | "pink";
 }
 
 function BackButton({ theme = "purple" }: BackButtonProps) {
@@ -14,6 +14,12 @@ function BackButton({ theme = "purple" }: BackButtonProps) {
       "hover:text-emerald-500 hover:border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.2)]",
     purple:
       "hover:text-purple-500 hover:border-purple-500 shadow-[0_0_15px_rgba(147,51,234,0.2)]",
+    yellow:
+      "hover:text-yellow-400 hover:border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.2)]",
+    orange:
+      "hover:text-orange-500 hover:border-orange-500 shadow-[0_0_15px_rgba(234,88,12,0.2)]",
+    pink:
+      "hover:text-pink-500 hover:border-pink-500 shadow-[0_0_15px_rgba(236,72,153,0.2)]",
   }[theme];
 
   return (

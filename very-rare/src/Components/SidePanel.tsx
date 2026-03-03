@@ -5,7 +5,7 @@ import { useBalance } from "../context/BalanceContext";
 interface SidePanelProps {
   onBet: (amount: number) => void;
   isGameActive: boolean;
-  theme?: "red" | "emerald" | "purple";
+  theme?: "red" | "emerald" | "purple" | "yellow" | "orange" | "pink";
 }
 
 function SidePanel({ onBet, isGameActive, theme = "red" }: SidePanelProps) {
@@ -27,6 +27,21 @@ function SidePanel({ onBet, isGameActive, theme = "red" }: SidePanelProps) {
       icon: "text-purple-500",
       text: "hover:text-purple-500",
       btn: "bg-purple-600 hover:bg-purple-500 border-purple-800 shadow-[0_0_20px_rgba(147,51,234,0.3)]",
+    },
+    yellow: {
+      icon: "text-yellow-400",
+      text: "hover:text-yellow-400",
+      btn: "bg-yellow-500 hover:bg-yellow-400 border-yellow-700 shadow-[0_0_20px_rgba(250,204,21,0.3)]",
+    },
+    orange: {
+      icon: "text-orange-500",
+      text: "hover:text-orange-500",
+      btn: "bg-orange-600 hover:bg-orange-500 border-orange-800 shadow-[0_0_20px_rgba(234,88,12,0.3)]",
+    },
+    pink: {
+      icon: "text-pink-500",
+      text: "hover:text-pink-500",
+      btn: "bg-pink-600 hover:bg-pink-500 border-pink-800 shadow-[0_0_20px_rgba(236,72,153,0.3)]",
     },
   }[theme];
 
